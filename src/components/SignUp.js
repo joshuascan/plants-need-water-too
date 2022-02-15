@@ -1,5 +1,4 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -7,7 +6,7 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  Link as MaterialLink,
+  Link,
   Paper,
   TextField,
   Typography,
@@ -21,8 +20,6 @@ const theme = createTheme();
 console.log(PlantImage);
 
 export default function SignIn() {
-  //   const { push } = useNavigate();
-
   const handleSubmit = (event) => {
     event.preventDefault();
   };
@@ -102,18 +99,14 @@ export default function SignIn() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <MaterialLink href="#" variant="body2">
+                  <Link href="#" variant="body2">
                     Forgot password?
-                  </MaterialLink>
+                  </Link>
                 </Grid>
                 <Grid item>
-                  <MaterialLink
-                    component={RouterLink}
-                    to="/register"
-                    variant="body2"
-                  >
+                  <Link href="#" variant="body2">
                     {"Don't have an account? Sign up"}
-                  </MaterialLink>
+                  </Link>
                 </Grid>
               </Grid>
             </Box>
