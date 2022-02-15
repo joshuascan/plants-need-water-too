@@ -6,14 +6,18 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  Link,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlined from "@mui/icons-material/LockOutlined";
+import PlantImage from "../assets/plants-sign-in.jpeg";
 
 const theme = createTheme();
+
+console.log(PlantImage);
 
 export default function SignIn() {
   const handleSubmit = (event) => {
@@ -23,6 +27,22 @@ export default function SignIn() {
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: `url(${PlantImage})`,
+            backgroundRepeat: "no-repeat",
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -77,6 +97,18 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="#" variant="body2">
+                    {"Don't have an account? Sign up"}
+                  </Link>
+                </Grid>
+              </Grid>
             </Box>
           </Box>
         </Grid>
