@@ -1,5 +1,7 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { userRegister } from "../store/userSlice";
 import {
   Avatar,
   Box,
@@ -15,10 +17,32 @@ import LockOutlined from "@mui/icons-material/LockOutlined";
 
 const theme = createTheme();
 
+const initialFormValues = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+};
+
 export default function SignIn() {
+  const [formValues, setFormValues] = useState(initialFormValues);
+  const { registerSuccess } = useSelector((state) => state.users);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleChange = (event) => {
+    setFormValues({ ...formValues, [event.target.name]: event.target.value });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    dispatch(userRegister(formValues));
+    setFormValues(initialFormValues);
   };
+
+  useEffect(() => {
+    if (registerSuccess) navigate("/");
+  }, [registerSuccess, navigate]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -50,7 +74,9 @@ export default function SignIn() {
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  name="firstName"
+                  name="first_name"
+                  value={formValues.first_name}
+                  onChange={handleChange}
                   autoComplete="given-name"
                   autoFocus
                 />
@@ -61,7 +87,9 @@ export default function SignIn() {
                   fullWidth
                   id="lastName"
                   label="Last Name"
-                  name="lastName"
+                  name="last_name"
+                  value={formValues.last_name}
+                  onChange={handleChange}
                   autoComplete="family-name"
                 />
               </Grid>
@@ -72,6 +100,8 @@ export default function SignIn() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  value={formValues.email}
+                  onChange={handleChange}
                   autoComplete="email"
                 />
               </Grid>
@@ -83,6 +113,8 @@ export default function SignIn() {
                   label="Password"
                   name="password"
                   type="password"
+                  value={formValues.password}
+                  onChange={handleChange}
                   autoComplete="current-password"
                 />
               </Grid>
