@@ -19,7 +19,7 @@ export const usersSlice = createSlice({
       else users.registerSuccess = true;
     },
     login: (users, action) => {
-      if (action.payload.attempt === false) users.loginSuccess = true;
+      if (action.payload.attempt === false) users.loginSuccess = false;
       else {
         localStorage.setItem("token", action.payload.token);
         users.loginSuccess = true;

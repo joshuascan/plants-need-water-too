@@ -1,5 +1,7 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { userLogin } from "../store/userSlice";
 import {
   Avatar,
   Box,
@@ -18,14 +20,30 @@ import PlantImage from "../assets/plants-sign-in.jpeg";
 
 const theme = createTheme();
 
-console.log(PlantImage);
+const initialFormValues = {
+  email: "",
+  password: "",
+};
 
 export default function SignIn() {
-  //   const { push } = useNavigate();
+  const [formValues, setFormValues] = useState(initialFormValues);
+  const { loginSuccess } = useSelector((state) => state.users);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleChange = (event) => {
+    setFormValues({ ...formValues, [event.target.name]: event.target.value });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    dispatch(userLogin(formValues));
+    setFormValues(initialFormValues);
   };
+
+  useEffect(() => {
+    if (loginSuccess) navigate("/dashboard");
+  }, [loginSuccess, navigate]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,6 +93,8 @@ export default function SignIn() {
                 id="email"
                 label="Email Address"
                 name="email"
+                value={formValues.email}
+                onChange={handleChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -85,6 +105,8 @@ export default function SignIn() {
                 id="password"
                 label="Password"
                 name="password"
+                value={formValues.password}
+                onChange={handleChange}
                 type="password"
                 autoComplete="current-password"
               />
