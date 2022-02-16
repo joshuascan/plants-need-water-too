@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { axiosWithAuth } from "../auth/axiosWithAuth";
 
 const initialState = {
   plantsList: [],
@@ -28,3 +29,14 @@ const plantsSlice = createSlice({
     },
   },
 });
+
+export const fetchPlants = () => (dispatch) => {
+  axiosWithAuth()
+    .get("/api/plants")
+    .then((res) => dispatch(plantsFetched(res.data)));
+};
+
+export const { plantsFetched, plantAdded, plantUpdated, plantDeleted } =
+  plantsSlice.actions;
+
+export default plantsSlice.reducer;
