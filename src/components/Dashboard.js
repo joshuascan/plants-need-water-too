@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPlants } from "../store/plantSlice";
+import PlantCard from "./PlantCard";
 
 export default function Dashboard() {
   const plants = useSelector((state) => state.plants.plantsList);
@@ -13,7 +14,7 @@ export default function Dashboard() {
   return (
     <div>
       {plants.map((plant) => (
-        <div key={plant.plant_id}>{plant.nickname}</div>
+        <PlantCard key={plant.plant_id} plant={plant} />
       ))}
     </div>
   );
