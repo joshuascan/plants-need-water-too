@@ -9,7 +9,7 @@ import {
 
 export default function PlantCard({ plant }) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card elevation={3} sx={{ maxWidth: 345 }}>
       <CardActionArea>
         <CardMedia
           component="img"
