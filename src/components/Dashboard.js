@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   styled,
   alpha,
@@ -24,6 +26,7 @@ import { mainListItems, secondaryListItems } from "./ListItems";
 import PlantsDisplay from "./PlantsDisplay";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { InputBase, Menu, MenuItem } from "@mui/material";
+import { logout } from "../store/userSlice";
 
 const drawerWidth = 240;
 
@@ -120,6 +123,8 @@ export default function Dashboard() {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -142,6 +147,12 @@ export default function Dashboard() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    handleMenuClose();
+    dispatch(logout());
+    navigate("/");
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -161,7 +172,7 @@ export default function Dashboard() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
 
