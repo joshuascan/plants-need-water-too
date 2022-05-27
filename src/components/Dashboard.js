@@ -22,8 +22,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import UpcomingIcon from "@mui/icons-material/Upcoming";
 import { mainListItems, secondaryListItems } from "./ListItems";
 import PlantsDisplay from "./PlantsDisplay";
+import AddPlant from "./AddPlant";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { InputBase, Menu, MenuItem } from "@mui/material";
 import { logout } from "../store/userSlice";
@@ -120,6 +127,8 @@ export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+
+  const [isAddPlantOpen, setIsAddPlantOpen] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -307,9 +316,25 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            <ListItemButton>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+            <ListItemButton>
+              <ListItemIcon>
+                <UpcomingIcon />
+              </ListItemIcon>
+              <ListItemText primary="Upcoming" />
+            </ListItemButton>
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            <ListItemButton onClick={() => setIsAddPlantOpen(true)}>
+              <ListItemIcon>
+                <AddCircleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Add Plant" />
+            </ListItemButton>
           </List>
         </Drawer>
         <Box
@@ -327,7 +352,8 @@ export default function Dashboard() {
           <Toolbar />
           {renderMobileMenu}
           {renderMenu}
-          <PlantsDisplay />
+          {!isAddPlantOpen && <PlantsDisplay />}
+          {isAddPlantOpen && <AddPlant setIsAddPlantOpen={setIsAddPlantOpen} />}
         </Box>
       </Box>
     </ThemeProvider>
