@@ -353,7 +353,7 @@ export default function Dashboard() {
           {renderMenu}
           <Routes>
             <Route path="/" element={<PlantsDisplay />} />
-            <Route path="/plant-:id" element={<PlantDetails />} />
+            <Route path="/:id" element={<PlantDetails />} />
             <Route path="/add-plant" element={<AddPlant />} />
             <Route path="/edit-plant/:plant_id" element={<EditPlant />} />
           </Routes>

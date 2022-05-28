@@ -12,7 +12,7 @@ export default function PlantCard({ plant }) {
   const navigate = useNavigate();
 
   const viewDetails = (id) => {
-    navigate(`/plant-${id}`);
+    navigate(`/dashboard/${id}`);
   };
 
   return (
@@ -34,12 +34,12 @@ export default function PlantCard({ plant }) {
           >
             {plant.species}
           </Typography>
-          <Typography>
+          {/* <Typography>
             Water{" "}
             {plant.days_between_watering > 1
               ? `every ${plant.days_between_watering} days`
               : "everyday"}
-          </Typography>
+          </Typography> */}
         </CardContent>
       </CardActionArea>
     </Card>
