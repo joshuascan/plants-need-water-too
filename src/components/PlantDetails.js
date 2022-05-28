@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { axiosWithAuth } from "../auth/axiosWithAuth";
 import {
   CardMedia,
@@ -13,6 +13,7 @@ import {
 export default function PlantDetails() {
   const [plant, setPlant] = useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -68,7 +69,12 @@ export default function PlantDetails() {
             <Typography>{plant.notes}</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button variant="contained">Edit</Button>
+            <Button
+              variant="contained"
+              onClick={() => navigate(`/dashboard/${id}/edit`)}
+            >
+              Edit
+            </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Button variant="contained" color="error">

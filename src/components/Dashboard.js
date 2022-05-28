@@ -355,7 +355,7 @@ export default function Dashboard() {
             <Route path="/" element={<PlantsDisplay />} />
             <Route path="/:id" element={<PlantDetails />} />
             <Route path="/add-plant" element={<AddPlant />} />
-            <Route path="/edit-plant/:plant_id" element={<EditPlant />} />
+            <Route path="/:id/edit" element={<EditPlant />} />
           </Routes>
         </Box>
       </Box>

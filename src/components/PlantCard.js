@@ -34,12 +34,6 @@ export default function PlantCard({ plant }) {
           >
             {plant.species}
           </Typography>
-          {/* <Typography>
-            Water{" "}
-            {plant.days_between_watering > 1
-              ? `every ${plant.days_between_watering} days`
-              : "everyday"}
-          </Typography> */}
         </CardContent>
       </CardActionArea>
     </Card>

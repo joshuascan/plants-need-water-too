@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { editPlant } from "../store/plantSlice";
+import { axiosWithAuth } from "../auth/axiosWithAuth";
 import {
   Box,
   Button,
@@ -17,9 +19,21 @@ const initialFormValues = {
   notes: "",
 };
 
-export default function EditPlant({ setIsAddPlantOpen }) {
+export default function EditPlant() {
   const [editedPlant, setEditedPlant] = useState(initialFormValues);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axiosWithAuth().get(`api/plants/${id}`);
+        console.log(data);
+        setEditedPlant(data);
+      } catch (error) {}
+    })();
+  }, [id]);
 
   const handleChange = (event) => {
     let { name, value } = event.target;
@@ -30,14 +44,12 @@ export default function EditPlant({ setIsAddPlantOpen }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(editPlant(editedPlant));
-    setEditedPlant(initialFormValues);
-    setIsAddPlantOpen(false);
+    dispatch(editPlant(id, editedPlant));
+    navigate(`/dashboard/${id}`);
   };
 
   const handleCancel = () => {
-    setEditedPlant(initialFormValues);
-    setIsAddPlantOpen(false);
+    navigate(`/dashboard/${id}`);
   };
 
   return (
@@ -51,7 +63,7 @@ export default function EditPlant({ setIsAddPlantOpen }) {
         }}
       >
         <Typography component="h1" variant="h5">
-          Add Plant
+          Edit Plant
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6 }}>
           <Grid container spacing={2}>
@@ -64,7 +76,6 @@ export default function EditPlant({ setIsAddPlantOpen }) {
                 name="nickname"
                 value={editedPlant.nickname}
                 onChange={handleChange}
-                autoFocus
               />
             </Grid>
             <Grid item xs={12}>
@@ -110,7 +121,7 @@ export default function EditPlant({ setIsAddPlantOpen }) {
             variant="contained"
             sx={{ mt: 5, mb: 2 }}
           >
-            Add Plant
+            Submit
           </Button>
           <Grid container justifyContent="center">
             <Grid item>
