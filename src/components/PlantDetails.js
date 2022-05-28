@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -9,15 +8,9 @@ import {
 } from "@mui/material";
 
 export default function PlantCard({ plant }) {
-  const navigate = useNavigate();
-
-  const viewDetails = (id) => {
-    navigate(`/plant-${id}`);
-  };
-
   return (
     <Card elevation={3} sx={{ maxWidth: 345 }}>
-      <CardActionArea onClick={() => viewDetails(plant.plant_id)}>
+      <CardActionArea>
         <CardMedia
           component="img"
           height="250"
@@ -40,6 +33,7 @@ export default function PlantCard({ plant }) {
               ? `every ${plant.days_between_watering} days`
               : "everyday"}
           </Typography>
+          <Typography>{plant.notes}</Typography>
         </CardContent>
       </CardActionArea>
     </Card>

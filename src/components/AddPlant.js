@@ -30,7 +30,6 @@ export default function AddPlant({ setIsAddPlantOpen }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(newPlant);
     dispatch(addPlant(newPlant));
     setNewPlant(initialFormValues);
     setIsAddPlantOpen(false);

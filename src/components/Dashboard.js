@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import {
   styled,
   alpha,
@@ -28,9 +28,10 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import UpcomingIcon from "@mui/icons-material/Upcoming";
-import { mainListItems, secondaryListItems } from "./ListItems";
 import PlantsDisplay from "./PlantsDisplay";
+import PlantDetails from "./PlantDetails";
 import AddPlant from "./AddPlant";
+import EditPlant from "./EditPlant";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { InputBase, Menu, MenuItem } from "@mui/material";
 import { logout } from "../store/userSlice";
@@ -127,8 +128,6 @@ export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
-  const [isAddPlantOpen, setIsAddPlantOpen] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -316,7 +315,7 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate("/dashboard")}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
@@ -329,7 +328,7 @@ export default function Dashboard() {
               <ListItemText primary="Upcoming" />
             </ListItemButton>
             <Divider sx={{ my: 1 }} />
-            <ListItemButton onClick={() => setIsAddPlantOpen(true)}>
+            <ListItemButton onClick={() => navigate("/dashboard/add-plant")}>
               <ListItemIcon>
                 <AddCircleIcon />
               </ListItemIcon>
@@ -352,8 +351,12 @@ export default function Dashboard() {
           <Toolbar />
           {renderMobileMenu}
           {renderMenu}
-          {!isAddPlantOpen && <PlantsDisplay />}
-          {isAddPlantOpen && <AddPlant setIsAddPlantOpen={setIsAddPlantOpen} />}
+          <Routes>
+            <Route path="/" element={<PlantsDisplay />} />
+            <Route path="/plant-:id" element={<PlantDetails />} />
+            <Route path="/add-plant" element={<AddPlant />} />
+            <Route path="/edit-plant/:plant_id" element={<EditPlant />} />
+          </Routes>
         </Box>
       </Box>
     </ThemeProvider>

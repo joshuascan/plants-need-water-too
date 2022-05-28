@@ -13,11 +13,11 @@ export default function PlantsDisplay() {
   }, [dispatch]);
 
   return (
-    <Container sx={{ width: "fit-content", mt: 10, mb: 10, flexGrow: 1 }}>
+    <Container sx={{ width: "fit-content", mt: 15, mb: 10, flexGrow: 1 }}>
       <Grid container spacing={10} justifyContent="space-between">
         {plants.map((plant) => (
-          <Grid item xs={12} sm={6} md={4}>
-            <PlantCard key={plant.plant_id} plant={plant} />
+          <Grid key={plant.plant_id} item xs={12} sm={6} md={4}>
+            <PlantCard plant={plant} />
           </Grid>
         ))}
       </Grid>
