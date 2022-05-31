@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addPlant } from "../store/plantSlice";
 import {
   Box,
@@ -15,11 +16,14 @@ const initialFormValues = {
   species: "",
   days_between_watering: "",
   notes: "",
+  img_url:
+    "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/plant.png",
 };
 
-export default function AddPlant({ setIsAddPlantOpen }) {
+export default function AddPlant() {
   const [newPlant, setNewPlant] = useState(initialFormValues);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     let { name, value } = event.target;
@@ -32,12 +36,12 @@ export default function AddPlant({ setIsAddPlantOpen }) {
     event.preventDefault();
     dispatch(addPlant(newPlant));
     setNewPlant(initialFormValues);
-    setIsAddPlantOpen(false);
+    navigate("/dashboard");
   };
 
   const handleCancel = () => {
     setNewPlant(initialFormValues);
-    setIsAddPlantOpen(false);
+    navigate("/dashboard");
   };
 
   return (
