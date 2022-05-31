@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import {
   styled,
@@ -32,6 +32,7 @@ import PlantsDisplay from "./PlantsDisplay";
 import PlantDetails from "./PlantDetails";
 import AddPlant from "./AddPlant";
 import EditPlant from "./EditPlant";
+import AccountDetails from "./AccountDetails";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { InputBase, Menu, MenuItem } from "@mui/material";
 import { logout } from "../store/userSlice";
@@ -126,6 +127,8 @@ const mdTheme = createTheme();
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const plants = useSelector((state) => state.plants.plantsList);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
@@ -155,6 +158,28 @@ export default function Dashboard() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const filterPlants = (plants, query) => {
+    if (!query) {
+      return plants;
+    }
+
+    return plants.filter((plant) => {
+      const plantName = plant.nickname.toLowerCase();
+      return plantName.includes(query);
+    });
+  };
+
+  const filteredPlants = filterPlants(plants, searchQuery);
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const handleOpenAccount = () => {
+    handleMenuClose();
+    navigate("/dashboard/account-details");
+  };
+
   const handleLogout = () => {
     handleMenuClose();
     dispatch(logout());
@@ -178,8 +203,7 @@ export default function Dashboard() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleOpenAccount}>My account</MenuItem>
       <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
@@ -235,7 +259,7 @@ export default function Dashboard() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: "24px", // keep right padding when drawer closed
+              pr: "24px",
             }}
           >
             <IconButton
@@ -264,6 +288,7 @@ export default function Dashboard() {
               </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
+                onChange={handleSearch}
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
@@ -352,10 +377,14 @@ export default function Dashboard() {
           {renderMobileMenu}
           {renderMenu}
           <Routes>
-            <Route path="/" element={<PlantsDisplay />} />
+            <Route
+              path="/"
+              element={<PlantsDisplay filteredPlants={filteredPlants} />}
+            />
             <Route path="/:id" element={<PlantDetails />} />
             <Route path="/add-plant" element={<AddPlant />} />
             <Route path="/:id/edit" element={<EditPlant />} />
+            <Route path="/account-details" element={<AccountDetails />} />
           </Routes>
         </Box>
       </Box>

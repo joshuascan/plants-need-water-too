@@ -104,7 +104,7 @@ export default function AddPlant() {
                 fullWidth
                 multiline
                 id="notes"
-                label="Notes"
+                label="Notes (optional)"
                 name="notes"
                 value={newPlant.notes}
                 onChange={handleChange}
@@ -115,7 +115,7 @@ export default function AddPlant() {
               <TextField
                 fullWidth
                 id="imgUrl"
-                label="Image URL"
+                label="Image URL (optional)"
                 name="img_url"
                 value={newPlant.img_url}
                 onChange={handleChange}
