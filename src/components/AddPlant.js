@@ -16,8 +16,7 @@ const initialFormValues = {
   species: "",
   days_between_watering: "",
   notes: "",
-  img_url:
-    "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/plant.png",
+  img_url: "",
 };
 
 export default function AddPlant() {
@@ -34,7 +33,13 @@ export default function AddPlant() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(addPlant(newPlant));
+    if (newPlant.img_url === "") {
+      const url =
+        "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/plant.png";
+      dispatch(addPlant({ ...newPlant, img_url: url }));
+    } else {
+      dispatch(addPlant(newPlant));
+    }
     setNewPlant(initialFormValues);
     navigate("/dashboard");
   };
@@ -96,7 +101,6 @@ export default function AddPlant() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 multiline
                 id="notes"
@@ -105,6 +109,16 @@ export default function AddPlant() {
                 value={newPlant.notes}
                 onChange={handleChange}
                 rows={4}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="imgUrl"
+                label="Image URL"
+                name="img_url"
+                value={newPlant.img_url}
+                onChange={handleChange}
               />
             </Grid>
           </Grid>
