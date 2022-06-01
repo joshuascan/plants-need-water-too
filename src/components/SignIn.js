@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogin } from "../store/userSlice";
@@ -27,7 +28,7 @@ const initialFormValues = {
 
 export default function SignIn() {
   const [formValues, setFormValues] = useState(initialFormValues);
-  const { loginSuccess } = useSelector((state) => state.users);
+  const { loginSuccess, errorMessage } = useSelector((state) => state.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -114,6 +115,9 @@ export default function SignIn() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
+              <Typography align="center" color="error">
+                {errorMessage}
+              </Typography>
               <Button
                 type="submit"
                 fullWidth
@@ -134,7 +138,7 @@ export default function SignIn() {
                     to="/register"
                     variant="body2"
                   >
-                    {"Don't have an account? Sign up"}
+                    Don't have an account? Sign up
                   </MaterialLink>
                 </Grid>
               </Grid>

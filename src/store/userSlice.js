@@ -5,6 +5,7 @@ const initialState = {
   registerSuccess: null,
   loginSuccess: null,
   loading: false,
+  errorMessage: "",
 };
 
 export const usersSlice = createSlice({
@@ -22,10 +23,13 @@ export const usersSlice = createSlice({
       users.registerSuccess = null;
     },
     login: (users, action) => {
-      if (action.payload.attempt === false) users.loginSuccess = false;
-      else {
+      if (action.payload.attempt === false) {
+        users.loginSuccess = false;
+        users.errorMessage = action.payload.message;
+      } else {
         localStorage.setItem("token", action.payload.token);
         users.loginSuccess = true;
+        users.errorMessage = "";
       }
     },
     logout: (users) => {
@@ -44,8 +48,8 @@ export const userLogin = (inputs) => (dispatch) => {
       dispatch(login(res.data));
       dispatch(setLoading());
     })
-    .catch(() => {
-      dispatch(login({ attempt: false }));
+    .catch((err) => {
+      dispatch(login({ attempt: false, message: err.response.data.message }));
       dispatch(setLoading());
     });
 };
