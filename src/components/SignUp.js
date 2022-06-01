@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { userRegister } from "../store/userSlice";
+import { userRegister, resetRegister } from "../store/userSlice";
 import {
   Avatar,
   Box,
@@ -65,7 +65,9 @@ export default function SignIn() {
       password: data.password,
     };
     dispatch(userRegister(newUser));
-    navigate("/");
+    setTimeout(() => {
+      dispatch(resetRegister());
+    }, 3000);
   };
 
   useEffect(() => {

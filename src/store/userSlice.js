@@ -18,6 +18,9 @@ export const usersSlice = createSlice({
       if (action.payload.attempt === false) users.registerSuccess = false;
       else users.registerSuccess = true;
     },
+    resetRegister: (users) => {
+      users.registerSuccess = null;
+    },
     login: (users, action) => {
       if (action.payload.attempt === false) users.loginSuccess = false;
       else {
@@ -61,6 +64,7 @@ export const userRegister = (inputs) => (dispatch) => {
     });
 };
 
-export const { setLoading, register, login, logout } = usersSlice.actions;
+export const { setLoading, register, resetRegister, login, logout } =
+  usersSlice.actions;
 
 export default usersSlice.reducer;
