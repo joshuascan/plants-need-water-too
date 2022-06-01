@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -91,7 +91,7 @@ export default function SignIn() {
             <Box
               component="form"
               onSubmit={handleSubmit(onSubmit)}
-              sx={{ mt: 1, border: "1px red solid" }}
+              sx={{ mt: 1, width: "95%" }}
             >
               <Controller
                 name="email"
