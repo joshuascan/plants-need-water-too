@@ -54,7 +54,7 @@ export const editPlant = (id, editedPlant) => (dispatch) => {
 export const deletePlant = (id) => (dispatch) => {
   axiosWithAuth()
     .delete(`/api/plants/${id}`)
-    .then((res) => dispatch(res.data))
+    .then((res) => dispatch(plantDeleted(res.data)))
     .catch((error) => console.log(error));
 };
 
