@@ -5,6 +5,6 @@ export const axiosWithAuth = () => {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
-    baseURL: "http://localhost:4000",
+    baseURL: "https://ft-watermyplants-1.herokuapp.com",
   });
 };
