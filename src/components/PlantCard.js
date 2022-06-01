@@ -20,7 +20,7 @@ export default function PlantCard({ plant }) {
       <CardActionArea onClick={() => viewDetails(plant.plant_id)}>
         <CardMedia
           component="img"
-          height="250"
+          height="350"
           image={plant.img_url}
           alt={plant.nickname}
         />

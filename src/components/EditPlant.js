@@ -17,6 +17,7 @@ const initialFormValues = {
   species: "",
   days_between_watering: "",
   notes: "",
+  img_url: "",
 };
 
 export default function EditPlant() {
@@ -29,9 +30,16 @@ export default function EditPlant() {
     (async () => {
       try {
         const { data } = await axiosWithAuth().get(`api/plants/${id}`);
-        console.log(data);
+        if (data.notes === null) {
+          data.notes = "";
+        }
+        if (data.img_url === null) {
+          data.img_url = "";
+        }
         setEditedPlant(data);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [id]);
 
@@ -103,15 +111,24 @@ export default function EditPlant() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 multiline
                 id="notes"
-                label="Notes"
+                label="Notes (optional)"
                 name="notes"
                 value={editedPlant.notes}
                 onChange={handleChange}
                 rows={4}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="imgUrl"
+                label="Image URL (optional)"
+                name="img_url"
+                value={editedPlant.img_url}
+                onChange={handleChange}
               />
             </Grid>
           </Grid>
