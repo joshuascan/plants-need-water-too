@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogin } from "../store/userSlice";
@@ -21,25 +23,30 @@ import PlantImage from "../assets/plants-sign-in.jpeg";
 
 const theme = createTheme();
 
-const initialFormValues = {
-  email: "",
-  password: "",
-};
-
 export default function SignIn() {
-  const [formValues, setFormValues] = useState(initialFormValues);
   const { loginSuccess, errorMessage } = useSelector((state) => state.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleChange = (event) => {
-    setFormValues({ ...formValues, [event.target.name]: event.target.value });
-  };
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email is invalid"),
+    password: Yup.string().required("Password is required"),
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(userLogin(formValues));
-    setFormValues(initialFormValues);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (data) => {
+    dispatch(userLogin(data));
   };
 
   useEffect(() => {
@@ -83,34 +90,46 @@ export default function SignIn() {
             </Typography>
             <Box
               component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{ mt: 1, border: "1px red solid" }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+              <Controller
                 name="email"
-                value={formValues.email}
-                onChange={handleChange}
-                autoComplete="email"
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    error={errors.email ? true : false}
+                    autoComplete="email"
+                    autoFocus
+                  />
+                )}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="password"
-                label="Password"
+              <Typography variant="inherit" color="error">
+                {errors.email?.message}
+              </Typography>
+              <Controller
                 name="password"
-                value={formValues.password}
-                onChange={handleChange}
-                type="password"
-                autoComplete="current-password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="normal"
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.password?.message}
+              </Typography>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
