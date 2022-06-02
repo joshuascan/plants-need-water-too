@@ -8,7 +8,6 @@ import { userLogin } from "../store/userSlice";
 import {
   Avatar,
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Grid,
@@ -17,6 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import PlantImage from "../assets/plants-sign-in.jpeg";
@@ -24,7 +24,9 @@ import PlantImage from "../assets/plants-sign-in.jpeg";
 const theme = createTheme();
 
 export default function SignIn() {
-  const { loginSuccess, errorMessage } = useSelector((state) => state.users);
+  const { loginSuccess, loading, errorMessage } = useSelector(
+    (state) => state.users
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -137,14 +139,15 @@ export default function SignIn() {
               <Typography align="center" color="error">
                 {errorMessage}
               </Typography>
-              <Button
+              <LoadingButton
                 type="submit"
+                loading={loading}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
-              </Button>
+              </LoadingButton>
               <Grid container>
                 <Grid item xs>
                   <MaterialLink href="#" variant="body2">

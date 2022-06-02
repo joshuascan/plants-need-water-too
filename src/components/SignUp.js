@@ -8,20 +8,20 @@ import { userRegister, resetRegister } from "../store/userSlice";
 import {
   Avatar,
   Box,
-  Button,
   Grid,
   Link as MaterialLink,
   Container,
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const { registerSuccess } = useSelector((state) => state.users);
+  const { registerSuccess, loading } = useSelector((state) => state.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -192,15 +192,16 @@ export default function SignIn() {
                 </Typography>
               </Grid>
             </Grid>
-            <Button
+            <LoadingButton
               onClick={handleSubmit(onSubmit)}
               type="submit"
+              loading={loading}
               fullWidth
               variant="contained"
               sx={{ mt: 5, mb: 2 }}
             >
               Sign Up
-            </Button>
+            </LoadingButton>
             <Grid container justifyContent="center">
               <Grid item>
                 <MaterialLink component={RouterLink} to="/" variant="body2">
