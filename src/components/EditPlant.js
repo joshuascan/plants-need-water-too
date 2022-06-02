@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { editPlant } from "../store/plantSlice";
 import { axiosWithAuth } from "../auth/axiosWithAuth";
@@ -11,20 +14,42 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-const initialFormValues = {
-  nickname: "",
-  species: "",
-  days_between_watering: "",
-  notes: "",
-  img_url: "",
-};
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function EditPlant() {
-  const [editedPlant, setEditedPlant] = useState(initialFormValues);
+  const { loading } = useSelector((state) => state.plants);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const validationSchema = Yup.object().shape({
+    nickname: Yup.string()
+      .required("Nickname is required")
+      .max(50, "Nickname must not exceed 50 characters"),
+    species: Yup.string()
+      .required("Species is required")
+      .max(50, "Species must not exceed 100 characters"),
+    days_between_watering: Yup.number()
+      .required("Days between watering is required")
+      .min(1, "Days between watering must be at least 1"),
+    notes: Yup.string().max(250, "Notes must not exceed 250 characters"),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      nickname: "",
+      species: "",
+      days_between_watering: "",
+      notes: "",
+      img_url: "",
+    },
+    resolver: yupResolver(validationSchema),
+  });
 
   useEffect(() => {
     (async () => {
@@ -36,23 +61,15 @@ export default function EditPlant() {
         if (data.img_url === null) {
           data.img_url = "";
         }
-        setEditedPlant(data);
+        reset(data);
       } catch (error) {
         console.log(error);
       }
     })();
-  }, [id]);
+  }, [id, reset]);
 
-  const handleChange = (event) => {
-    let { name, value } = event.target;
-    if (name === "days_between_watering") {
-      setEditedPlant({ ...editedPlant, [name]: Number(value) });
-    } else setEditedPlant({ ...editedPlant, [name]: value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(editPlant(id, editedPlant));
+  const onSubmit = (data) => {
+    dispatch(editPlant(id, data));
     navigate(`/dashboard/${id}`);
   };
 
@@ -73,73 +90,108 @@ export default function EditPlant() {
         <Typography component="h1" variant="h5">
           Edit Plant
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 6 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="nickname"
-                label="Nickname"
+              <Controller
                 name="nickname"
-                value={editedPlant.nickname}
-                onChange={handleChange}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.nickname ? true : false}
+                    fullWidth
+                    label="Nickname"
+                    autoFocus
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.nickname?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="species"
-                label="Species"
+              <Controller
                 name="species"
-                value={editedPlant.species}
-                onChange={handleChange}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.species ? true : false}
+                    fullWidth
+                    label="Species"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.species?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="daysBetweenWatering"
-                label="Days Between Watering"
+              <Controller
                 name="days_between_watering"
-                value={editedPlant.days_between_watering}
-                onChange={handleChange}
-                type="number"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.days_between_watering ? true : false}
+                    fullWidth
+                    label="Days Between Watering"
+                    type="number"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.days_between_watering?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                id="notes"
-                label="Notes (optional)"
+              <Controller
                 name="notes"
-                value={editedPlant.notes}
-                onChange={handleChange}
-                rows={4}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    fullWidth
+                    multiline
+                    {...field}
+                    error={errors.notes ? true : false}
+                    label="Notes (optional)"
+                    rows={4}
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.notes?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id="imgUrl"
-                label="Image URL (optional)"
+              <Controller
                 name="img_url"
-                value={editedPlant.img_url}
-                onChange={handleChange}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    fullWidth
+                    {...field}
+                    label="Image URL (optional)"
+                  />
+                )}
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
             type="submit"
+            loading={loading}
             fullWidth
             variant="contained"
             sx={{ mt: 5, mb: 2 }}
           >
             Submit
-          </Button>
+          </LoadingButton>
           <Grid container justifyContent="center">
             <Grid item>
               <Button onClick={handleCancel}>Cancel</Button>
