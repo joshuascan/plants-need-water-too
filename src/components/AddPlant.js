@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addPlant } from "../store/plantSlice";
 import {
@@ -10,42 +13,53 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-const initialFormValues = {
-  nickname: "",
-  species: "",
-  days_between_watering: "",
-  notes: "",
-  img_url: "",
-};
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function AddPlant() {
-  const [newPlant, setNewPlant] = useState(initialFormValues);
+  const { loading } = useSelector((state) => state.plants);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    let { name, value } = event.target;
-    if (name === "days_between_watering") {
-      setNewPlant({ ...newPlant, [name]: Number(value) });
-    } else setNewPlant({ ...newPlant, [name]: value });
-  };
+  const validationSchema = Yup.object().shape({
+    nickname: Yup.string()
+      .required("Nickname is required")
+      .max(50, "Nickname must not exceed 50 characters"),
+    species: Yup.string()
+      .required("Species is required")
+      .max(50, "Species must not exceed 100 characters"),
+    days_between_watering: Yup.number()
+      .required("Days between watering is required")
+      .min(1, "Days between watering must be at least 1"),
+    notes: Yup.string().max(250, "Notes must not exceed 250 characters"),
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (newPlant.img_url === "") {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      nickname: "",
+      species: "",
+      days_between_watering: 1,
+      notes: "",
+      img_url: "",
+    },
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (data) => {
+    if (data.img_url === "") {
       const url =
         "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/plant.png";
-      dispatch(addPlant({ ...newPlant, img_url: url }));
+      dispatch(addPlant({ ...data, img_url: url }));
     } else {
-      dispatch(addPlant(newPlant));
+      dispatch(addPlant(data));
     }
-    setNewPlant(initialFormValues);
     navigate("/dashboard");
   };
 
   const handleCancel = () => {
-    setNewPlant(initialFormValues);
     navigate("/dashboard");
   };
 
@@ -62,74 +76,108 @@ export default function AddPlant() {
         <Typography component="h1" variant="h5">
           Add Plant
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 6 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="nickname"
-                label="Nickname"
+              <Controller
                 name="nickname"
-                value={newPlant.nickname}
-                onChange={handleChange}
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.nickname ? true : false}
+                    fullWidth
+                    label="Nickname"
+                    autoFocus
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.nickname?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="species"
-                label="Species"
+              <Controller
                 name="species"
-                value={newPlant.species}
-                onChange={handleChange}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.species ? true : false}
+                    fullWidth
+                    label="Species"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.species?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="daysBetweenWatering"
-                label="Days Between Watering"
+              <Controller
                 name="days_between_watering"
-                value={newPlant.days_between_watering}
-                onChange={handleChange}
-                type="number"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.days_between_watering ? true : false}
+                    fullWidth
+                    label="Days Between Watering"
+                    type="number"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.days_between_watering?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                id="notes"
-                label="Notes (optional)"
+              <Controller
                 name="notes"
-                value={newPlant.notes}
-                onChange={handleChange}
-                rows={4}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    fullWidth
+                    multiline
+                    {...field}
+                    error={errors.notes ? true : false}
+                    label="Notes (optional)"
+                    rows={4}
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.notes?.message}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id="imgUrl"
-                label="Image URL (optional)"
+              <Controller
                 name="img_url"
-                value={newPlant.img_url}
-                onChange={handleChange}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    fullWidth
+                    {...field}
+                    label="Image URL (optional)"
+                  />
+                )}
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
             type="submit"
+            loading={loading}
             fullWidth
             variant="contained"
             sx={{ mt: 5, mb: 2 }}
           >
             Add Plant
-          </Button>
+          </LoadingButton>
           <Grid container justifyContent="center">
             <Grid item>
               <Button onClick={handleCancel}>Cancel</Button>
