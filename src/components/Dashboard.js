@@ -172,7 +172,9 @@ export default function Dashboard() {
   const filteredPlants = filterPlants(plants, searchQuery);
 
   const handleSearch = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
+    setTimeout(() => {
+      setSearchQuery(event.target.value.toLowerCase());
+    }, 1000);
   };
 
   const handleOpenAccount = () => {
