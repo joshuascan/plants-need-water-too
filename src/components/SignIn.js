@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogin } from "../store/userSlice";
 import {
   Avatar,
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Grid,
@@ -14,31 +16,39 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import PlantImage from "../assets/plants-sign-in.jpeg";
 
 const theme = createTheme();
 
-const initialFormValues = {
-  email: "",
-  password: "",
-};
-
 export default function SignIn() {
-  const [formValues, setFormValues] = useState(initialFormValues);
-  const { loginSuccess } = useSelector((state) => state.users);
+  const { loginSuccess, loading, errorMessage } = useSelector(
+    (state) => state.users
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleChange = (event) => {
-    setFormValues({ ...formValues, [event.target.name]: event.target.value });
-  };
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email is invalid"),
+    password: Yup.string().required("Password is required"),
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(userLogin(formValues));
-    setFormValues(initialFormValues);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (data) => {
+    dispatch(userLogin(data));
   };
 
   useEffect(() => {
@@ -82,46 +92,62 @@ export default function SignIn() {
             </Typography>
             <Box
               component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{ mt: 1, width: "95%" }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+              <Controller
                 name="email"
-                value={formValues.email}
-                onChange={handleChange}
-                autoComplete="email"
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    error={errors.email ? true : false}
+                    autoComplete="email"
+                    autoFocus
+                  />
+                )}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="password"
-                label="Password"
+              <Typography variant="inherit" color="error">
+                {errors.email?.message}
+              </Typography>
+              <Controller
                 name="password"
-                value={formValues.password}
-                onChange={handleChange}
-                type="password"
-                autoComplete="current-password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="normal"
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                )}
               />
+              <Typography variant="inherit" color="error">
+                {errors.password?.message}
+              </Typography>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Button
+              <Typography align="center" color="error">
+                {errorMessage}
+              </Typography>
+              <LoadingButton
                 type="submit"
+                loading={loading}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
-              </Button>
+              </LoadingButton>
               <Grid container>
                 <Grid item xs>
                   <MaterialLink href="#" variant="body2">
@@ -134,7 +160,7 @@ export default function SignIn() {
                     to="/register"
                     variant="body2"
                   >
-                    {"Don't have an account? Sign up"}
+                    Don't have an account? Sign up
                   </MaterialLink>
                 </Grid>
               </Grid>

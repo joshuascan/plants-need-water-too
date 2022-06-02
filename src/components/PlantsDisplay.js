@@ -11,10 +11,14 @@ export default function PlantsDisplay({ filteredPlants }) {
     dispatch(fetchPlants());
   }, [dispatch]);
 
+  const sortedPlants = [...filteredPlants].sort((a, b) =>
+    a.nickname.toLowerCase() > b.nickname.toLowerCase() ? 1 : -1
+  );
+
   return (
     <Container sx={{ width: "1200px", mt: 15, mb: 10, flexGrow: 1 }}>
       <Grid container spacing={10} justifyContent="flex-start">
-        {filteredPlants.map((plant) => (
+        {sortedPlants.map((plant) => (
           <Grid key={plant.plant_id} item xs={12} sm={6} md={4}>
             <PlantCard plant={plant} />
           </Grid>
